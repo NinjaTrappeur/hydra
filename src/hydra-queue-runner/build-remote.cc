@@ -380,17 +380,14 @@ void State::buildRemote(ref<Store> destStore,
                 break;
             case BuildResult::PermanentFailure:
                 result.stepStatus = bsFailed;
-                result.canCache = true;
                 result.errorMsg = "";
                 break;
             case BuildResult::InputRejected:
             case BuildResult::OutputRejected:
                 result.stepStatus = bsFailed;
-                result.canCache = true;
                 break;
             case BuildResult::TransientFailure:
                 result.stepStatus = bsFailed;
-                result.canRetry = true;
                 result.errorMsg = "";
                 break;
             case BuildResult::TimedOut:
@@ -399,20 +396,19 @@ void State::buildRemote(ref<Store> destStore,
                 break;
             case BuildResult::MiscFailure:
                 result.stepStatus = bsAborted;
-                result.canRetry = true;
                 break;
             case BuildResult::LogLimitExceeded:
                 result.stepStatus = bsLogLimitExceeded;
                 break;
             case BuildResult::NotDeterministic:
                 result.stepStatus = bsNotDeterministic;
-                result.canRetry = false;
-                result.canCache = true;
                 break;
             default:
                 result.stepStatus = bsAborted;
                 break;
         }
+        result.canCache = false;
+        result.canRetry = true;
         if (result.stepStatus != bsSuccess) return;
 
         result.errorMsg = "";
